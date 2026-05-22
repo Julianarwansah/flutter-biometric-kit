@@ -1,5 +1,4 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+library flutter_biometric_kit;
+
+export 'src/biometric_exception.dart';
+export 'src/biometric_service.dart';
