@@ -23,13 +23,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-  plugin:
-    platforms:
-      android:
-        package: com.example.flutter_biometric_kit
-        pluginClass: FlutterBiometricKitPlugin
-      ios:
-        pluginClass: FlutterBiometricKitPlugin
+
 
   # To add assets to your package, add an assets section, like this:
   # assets:
