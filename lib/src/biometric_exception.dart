@@ -1,5 +1,4 @@
-import 'package:flutter/services.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
+import 'package:local_auth/local_auth.dart';
 
 enum BiometricErrorCode {
   noBiometricHardware,
@@ -22,34 +21,40 @@ class BiometricException implements Exception {
     required this.userMessage,
   });
 
-  factory BiometricException.fromPlatformException(PlatformException e) {
+  factory BiometricException.fromLocalAuthException(LocalAuthException e) {
     switch (e.code) {
-      case auth_error.noBiometricsEnrolled:
+      case LocalAuthExceptionCode.noBiometricHardware:
+        return BiometricException(
+          code: BiometricErrorCode.noBiometricHardware,
+          message: e.message ?? '',
+          userMessage: 'Perangkat tidak memiliki sensor biometrik.',
+        );
+      case LocalAuthExceptionCode.noBiometricsEnrolled:
         return BiometricException(
           code: BiometricErrorCode.notEnrolled,
           message: e.message ?? '',
           userMessage: 'Belum ada sidik jari tersimpan. Daftarkan di Pengaturan.',
         );
-      case auth_error.lockedOut:
+      case LocalAuthExceptionCode.lockedOut:
         return BiometricException(
           code: BiometricErrorCode.temporaryLockout,
           message: e.message ?? '',
           userMessage: 'Terlalu banyak percobaan gagal. Coba beberapa saat lagi.',
         );
-      case auth_error.permanentlyLockedOut:
+      case LocalAuthExceptionCode.permanentlyLockedOut:
         return BiometricException(
           code: BiometricErrorCode.biometricLockout,
           message: e.message ?? '',
           userMessage: 'Biometrik terkunci. Buka dengan PIN/Password.',
         );
-      case auth_error.notAvailable:
-      case auth_error.notEnrolled:
+      case LocalAuthExceptionCode.notAvailable:
+      case LocalAuthExceptionCode.notEnrolled:
         return BiometricException(
           code: BiometricErrorCode.noBiometricHardware,
           message: e.message ?? '',
           userMessage: 'Perangkat tidak memiliki sensor biometrik atau tidak tersedia.',
         );
-      case auth_error.passcodeNotSet:
+      case LocalAuthExceptionCode.passcodeNotSet:
         return BiometricException(
           code: BiometricErrorCode.unknown,
           message: e.message ?? '',
