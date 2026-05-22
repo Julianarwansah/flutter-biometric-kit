@@ -1,7 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
-import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'biometric_exception.dart';
 
 class BiometricService {
@@ -51,17 +49,12 @@ class BiometricService {
           AndroidAuthMessages(
             signInTitle: 'Verifikasi Diperlukan',
             cancelButton: 'Batal',
-            biometricHint: 'Tempelkan jari atau arahkan wajah',
-          ),
-          IOSAuthMessages(
-            cancelButton: 'Batal',
+            signInHint: 'Tempelkan jari atau arahkan wajah',
           ),
         ],
-        options: const AuthenticationOptions(
-          biometricOnly: false,
-          sensitiveTransaction: true,
-          stickyAuth: true,
-        ),
+        biometricOnly: false,
+        sensitiveTransaction: true,
+        persistAcrossBackgrounding: true,
       );
 
       if (!result) {
@@ -73,8 +66,14 @@ class BiometricService {
       }
 
       return true;
-    } on PlatformException catch (e) {
-      throw BiometricException.fromPlatformException(e);
+    } on LocalAuthException catch (e) {
+      throw BiometricException.fromLocalAuthException(e);
+    } catch (e) {
+      throw BiometricException(
+        code: BiometricErrorCode.unknown,
+        message: e.toString(),
+        userMessage: 'Terjadi kesalahan tidak dikenal.',
+      );
     }
   }
 }
